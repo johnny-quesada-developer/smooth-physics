@@ -19,7 +19,9 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # The golden traces were recorded on Apple Silicon. Math.sin and its kin can differ in the last bit between ARM
+    # and x86, which the unrounded 'default' precision keeps, so the tests run on an ARM runner like the recordings.
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 

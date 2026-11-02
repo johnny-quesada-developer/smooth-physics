@@ -33,7 +33,7 @@ const CAPABILITIES: readonly Capability[] = [
     name: 'determinism',
     area: 'Determinism',
     title: 'Same input, same output',
-    text: 'In one JavaScript engine, a given input produces the same result bit for bit, so replays and automated tests match frame for frame.',
+    text: 'In one JavaScript engine on one processor architecture, a given input produces the same result bit for bit, so replays and automated tests match frame for frame.',
   },
   {
     name: 'budget',

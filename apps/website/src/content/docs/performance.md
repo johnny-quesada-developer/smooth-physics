@@ -65,7 +65,7 @@ cloth.system.setPrecision('rounded');
 - `'default'` runs in 64-bit numbers. It is the fastest choice and what a new system uses.
 - `'rounded'` rounds every operation to 32 bits. It repeats recorded runs bit for bit, and it is slower.
 
-In one JavaScript engine, the same input always gives the same output in either precision. Engines may compute `Math.sin`, `Math.cos`, `Math.acos` and `Math.pow` slightly differently, so neither precision promises the same result in different browsers.
+In one JavaScript engine on one processor architecture, the same input always gives the same output in either precision. Engines may compute `Math.sin`, `Math.cos`, `Math.acos` and `Math.pow` slightly differently, so neither precision promises the same result in different browsers.
 
 ## The quality controller
 

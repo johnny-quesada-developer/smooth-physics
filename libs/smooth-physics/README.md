@@ -7,7 +7,8 @@ cloth's roots becomes a particle. Every frame the solver moves the particles and
 - **A ready-made three.js adapter.** `smooth-physics/three` connects it to a three.js model in one call and is optimized
   like the solver. It is a separate entry point, so apps without three.js never load it,
   and the three.js module is passed in by the caller.
-- **Deterministic.** In one JavaScript engine, the same input always gives the same output, bit for bit.
+- **Deterministic.** In one JavaScript engine on one processor architecture, the same input always gives the same
+  output, bit for bit.
 - **Fails loudly.** Every input is validated once, strictly. A call does what it was asked or throws a
   `SmoothPhysicsError`; nothing is ignored silently.
 - **Any coordinates.** Left- or right-handed, Y or Z up. The conversion only moves and negates numbers, so it is exact.
