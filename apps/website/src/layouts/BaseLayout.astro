@@ -1,0 +1,41 @@
+---
+import { sitePath } from '@/site/paths';
+// The HTML document for every route: metadata, theme, shell script and the page body.
+import '@/styles/global.css';
+
+type Props = { readonly title: string; readonly description: string };
+
+const { title, description } = Astro.props;
+const fullTitle = title === 'smooth-physics' ? title : `${title} · smooth-physics`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131313" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href={sitePath('/favicon.svg')} type="image/svg+xml" />
+    <script is:inline>
+      // Applies the stored or system theme before the first paint, so the page never flashes the other one.
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch (error) {}
+        var dark = stored === 'dark' || (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
+  </head>
+  <body class="bg-paper text-ink antialiased">
+    <slot />
+    <script>
+      import '@/shell.client.ts';
+    </script>
+  </body>
+</html>

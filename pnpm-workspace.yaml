@@ -1,0 +1,6 @@
+packages:
+  - libs/*
+  - apps/*
+minimumReleaseAgeExclude:
+  - '@types/three@0.187.0'
+  - tailwind-variants@4.0.1

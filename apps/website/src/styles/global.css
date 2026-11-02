@@ -1,0 +1,137 @@
+/* The design system: every color, radius, shadow and size the site may use. The default Tailwind palette is
+   removed, so a class outside these tokens does not exist. Themes swap the --theme-* values only. */
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  --color-*: initial;
+  --color-paper: var(--theme-paper);
+  --color-ink: var(--theme-ink);
+  --color-muted: var(--theme-muted);
+  --color-line: var(--theme-line);
+  --color-soft: var(--theme-soft);
+  --color-surface: var(--theme-surface);
+  --color-on-ink: var(--theme-on-ink);
+  --color-lime: var(--theme-lime);
+  --color-lime-soft: var(--theme-lime-soft);
+  --color-lime-fill: var(--theme-lime-fill);
+  --color-honey: var(--theme-honey);
+  --color-honey-soft: var(--theme-honey-soft);
+  --color-honey-fill: var(--theme-honey-fill);
+  --color-sage: var(--theme-sage);
+  --color-sage-soft: var(--theme-sage-soft);
+  --color-sage-fill: var(--theme-sage-fill);
+  --color-stone: var(--theme-stone);
+  --color-stone-soft: var(--theme-stone-soft);
+  --color-stone-fill: var(--theme-stone-fill);
+  --color-terminal: var(--theme-terminal);
+  --color-terminal-muted: var(--theme-terminal-muted);
+  --color-terminal-text: var(--theme-terminal-text);
+
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-mono: SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+
+  --text-display: clamp(1.875rem, 1.25rem + 2.4vw, 3rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.045em;
+  --text-title: clamp(1.75rem, 1.35rem + 1.7vw, 2.6rem);
+  --text-title--line-height: 1.08;
+  --text-title--letter-spacing: -0.04em;
+
+  --spacing-touch: 2.75rem;
+  --radius-control: 7px;
+  --radius-code: 8px;
+  --radius-panel: 10px;
+  --radius-stage: 16px;
+  --shadow-raised: 0 12px 25px -24px var(--theme-shadow);
+  --shadow-floating: 0 12px 36px -30px var(--theme-shadow), 0 24px 80px -60px var(--theme-shadow);
+}
+
+/* Neutrals are the greys of react-global-state-hooks. The accents are one analogous family around yellow-green:
+   lemon-lime (lime), butter and honey yellows (honey) and sage, with stone greys. Each has a text tone that meets
+   AA on paper, a soft background, and a fill for surfaces and cloth. Dark values keep low chroma, so nothing
+   glows. Each value is light-dark(light, dark): the scheme follows the system until the reader picks a theme, and
+   the inline script in BaseLayout sets data-theme before the first paint. */
+:root {
+  color-scheme: light dark;
+  --theme-paper: light-dark(#ffffff, #131313);
+  --theme-ink: light-dark(#1d2422, #ececea);
+  --theme-muted: light-dark(#626d66, #a7a7a2);
+  --theme-line: light-dark(#e3e7e4, #323232);
+  --theme-soft: light-dark(#f7f8f6, #1a1a1a);
+  --theme-surface: light-dark(#fbfcfa, #1f1f1f);
+  --theme-on-ink: light-dark(#ffffff, #131313);
+  --theme-lime: light-dark(#55691f, #c3cd98);
+  --theme-lime-soft: light-dark(#f2f6df, #282927);
+  --theme-lime-fill: light-dark(#dde9a3, #a3ad72);
+  --theme-honey: light-dark(#7a5f12, #d9c68a);
+  --theme-honey-soft: light-dark(#fbf5dc, #2a2926);
+  --theme-honey-fill: light-dark(#f1df98, #bfa865);
+  --theme-sage: light-dark(#3f6a50, #a3b9a6);
+  --theme-sage-soft: light-dark(#edf3ee, #272827);
+  --theme-sage-fill: light-dark(#bfd3bf, #829a84);
+  --theme-stone: light-dark(#5c5f58, #b9b8b0);
+  --theme-stone-soft: light-dark(#f1f2ef, #262626);
+  --theme-stone-fill: light-dark(#e6e7e1, #9b9b94);
+  --theme-terminal: light-dark(#232823, #0f0f0f);
+  --theme-terminal-muted: light-dark(#aab3a6, #9a9a96);
+  --theme-terminal-text: light-dark(#e8ebe2, #e6e6e3);
+  --theme-shadow: light-dark(rgb(29 36 34 / 0.55), rgb(0 0 0 / 0.7));
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+  }
+
+  /* While a stage covers the screen as a layer, where the page cannot go full screen, the page behind holds still and
+     is hidden, so none of it shows where the browser's bars cut the layer short. */
+  html[data-stage-layer] {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  html[data-stage-layer] body {
+    overflow: hidden;
+    overscroll-behavior: none;
+    visibility: hidden;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lime);
+    outline-offset: 2px;
+  }
+
+  /* Markdown code from Shiki carries both themes as variables. */
+  .astro-code,
+  .astro-code span {
+    color: light-dark(var(--shiki-light), var(--shiki-dark));
+    background-color: light-dark(var(--shiki-light-bg), var(--shiki-dark-bg));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

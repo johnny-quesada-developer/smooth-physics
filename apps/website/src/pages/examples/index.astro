@@ -1,0 +1,23 @@
+---
+import { loadDocs } from '@/features/Docs/loadDocs';
+import ExamplesPage from '@/features/Examples/components/ExamplesPage';
+import { createSiteSearch } from '@/features/Search/catalogue/siteSearch';
+import Finder from '@/features/Search/components/Finder';
+import SiteFooter from '@/features/Shell/components/SiteFooter';
+import SiteHeader from '@/features/Shell/components/SiteHeader';
+import SkipLink from '@/features/Shell/components/SkipLink';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const docs = (await loadDocs()).map(({ summary, body }) => ({ ...summary, body }));
+const { index, facetGroups } = createSiteSearch({ docs });
+---
+
+<BaseLayout title="Examples" description="Live, tunable examples of cloth, hair and chain physics, searchable together with the documentation.">
+  <SkipLink />
+  <SiteHeader current="examples" />
+  <ExamplesPage>
+    {/* Ranking runs as the reader types. Idle is enough: the static list of every page is already useful. */}
+    <Finder client:idle index={index} facetGroups={facetGroups} heading="Search examples and documentation" />
+  </ExamplesPage>
+  <SiteFooter />
+</BaseLayout>

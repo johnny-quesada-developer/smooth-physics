@@ -1,0 +1,29 @@
+---
+import InstallCommand from '@/components/InstallCommand';
+import { EXAMPLES } from '@/features/Examples/catalogue/examples';
+import HeroStage from '@/features/Home/components/HeroStage';
+import HomePage from '@/features/Home/components/HomePage';
+import ShowreelPlayer from '@/features/Showreel/components/ShowreelPlayer';
+import SiteFooter from '@/features/Shell/components/SiteFooter';
+import SiteHeader from '@/features/Shell/components/SiteHeader';
+import SkipLink from '@/features/Shell/components/SkipLink';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { PACKAGE_NAME } from '@/site/package';
+---
+
+<BaseLayout
+  title={PACKAGE_NAME}
+  description="Real-time secondary motion for character rigs on the web: cloth, capes, skirts, hair, tails, ribbons and chains, simulated on the bones your model already has."
+>
+  <SkipLink />
+  <SiteHeader />
+  <HomePage examples={EXAMPLES}>
+    {/* The tabs sit right below the showreel, near the fold, so they must answer the first tap: load. */}
+    <InstallCommand slot="install" client:load packageName={PACKAGE_NAME} />
+    {/* The showreel opens the page and its controls sit near the fold, so they must answer the first tap: load. */}
+    <ShowreelPlayer aria-label="Showreel" client:load />
+    {/* The banner sits further down: visible keeps its WebGL context and worker out of the first load. */}
+    <HeroStage slot="banner" className="max-w-none" client:visible />
+  </HomePage>
+  <SiteFooter />
+</BaseLayout>

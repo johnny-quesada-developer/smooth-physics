@@ -1,0 +1,43 @@
+---
+import { loadDocs } from '@/features/Docs/loadDocs';
+import { docHref } from '@/features/Docs/sections';
+import { EXAMPLES } from '@/features/Examples/catalogue/examples';
+import type { Example } from '@/features/Examples/catalogue/types';
+import ExamplePage from '@/features/Examples/components/ExamplePage';
+import ExamplePlayground from '@/features/Examples/components/ExamplePlayground';
+import FabricLab from '@/features/Examples/components/FabricLab';
+import WorkerWallPlayground from '@/features/Examples/components/WorkerWallPlayground';
+import { isStageExample } from '@/features/Examples/scenes';
+import SiteFooter from '@/features/Shell/components/SiteFooter';
+import SiteHeader from '@/features/Shell/components/SiteHeader';
+import SkipLink from '@/features/Shell/components/SkipLink';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+export function getStaticPaths(): { params: { slug: string }; props: { example: Example } }[] {
+  return EXAMPLES.map((example) => ({ params: { slug: example.slug }, props: { example } }));
+}
+
+type Props = { readonly example: Example };
+
+const MAXIMUM_GUIDES = 3;
+
+const { example } = Astro.props;
+const docs = (await loadDocs()).map(({ summary }) => summary);
+// Pages built around this example come first, then pages about the features it shows.
+const named = docs.filter((doc) => doc.example === example.slug);
+const related = docs.filter((doc) => !named.includes(doc) && doc.features.some((feature) => example.facets.feature.includes(feature)));
+const guides = [...named, ...related].slice(0, MAXIMUM_GUIDES).map((doc) => ({ slug: doc.slug, title: doc.title, href: docHref(doc.slug) }));
+const slug = example.slug;
+---
+
+<BaseLayout title={example.title} description={example.summary}>
+  <SkipLink />
+  <SiteHeader current="examples" />
+  <ExamplePage example={example} guides={guides}>
+    {/* The stage simulates and the controls change it, so it needs a client; visible defers WebGL until it is on screen. */}
+    {isStageExample(slug) ? <ExamplePlayground client:visible slug={slug} /> : null}
+    {slug === 'worker-wall' ? <WorkerWallPlayground client:visible /> : null}
+    {slug === 'fabric-lab' ? <FabricLab client:visible /> : null}
+  </ExamplePage>
+  <SiteFooter />
+</BaseLayout>

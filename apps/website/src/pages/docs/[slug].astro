@@ -1,0 +1,51 @@
+---
+import { sitePath } from '@/site/paths';
+import { render } from 'astro:content';
+import InstallCommand from '@/components/InstallCommand';
+import DocsPage from '@/features/Docs/components/DocsPage';
+import DocsSearch from '@/features/Docs/components/DocsSearch';
+import { groupDocs, loadDocs, type LoadedDoc } from '@/features/Docs/loadDocs';
+import { INSTALL_HEADING } from '@/features/Docs/sections';
+import type { DocGroup, DocLink } from '@/features/Docs/types';
+import { findExample } from '@/features/Examples/catalogue/examples';
+import SiteFooter from '@/features/Shell/components/SiteFooter';
+import SiteHeader from '@/features/Shell/components/SiteHeader';
+import SkipLink from '@/features/Shell/components/SkipLink';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { PACKAGE_NAME } from '@/site/package';
+
+type Props = { readonly doc: LoadedDoc; readonly groups: readonly DocGroup[]; readonly previous: DocLink | null; readonly next: DocLink | null };
+
+export async function getStaticPaths(): Promise<{ params: { slug: string }; props: Props }[]> {
+  const docs = await loadDocs();
+  const groups = groupDocs(docs.map(({ summary }) => summary));
+  const linkTo = (doc: LoadedDoc | undefined): DocLink | null => (doc ? { slug: doc.summary.slug, title: doc.summary.navTitle } : null);
+  return docs.map((doc, position) => ({
+    params: { slug: doc.summary.slug },
+    props: { doc, groups, previous: linkTo(docs[position - 1]), next: linkTo(docs[position + 1]) },
+  }));
+}
+
+const { doc, groups, previous, next } = Astro.props;
+const { summary } = doc;
+const { Content, headings } = await render(doc.entry);
+const sections = headings.filter((heading) => heading.depth === 2).map(({ slug, text }) => ({ slug, text }));
+const tableOfContents = summary.install ? [INSTALL_HEADING, ...sections] : sections;
+const example = summary.example ? findExample(summary.example) : undefined;
+---
+
+<BaseLayout title={summary.title} description={summary.lead}>
+  <SkipLink />
+  <SiteHeader current="docs" />
+  <DocsPage doc={summary} exampleTitle={example?.title ?? null} groups={groups} headings={tableOfContents} next={next} previous={previous}>
+    {/* Searching needs the index, which the island fetches when the reader starts typing. */}
+    <DocsSearch client:idle indexUrl={sitePath('/docs/search-index.json')} slot="search" />
+    {summary.install ? <InstallCommand client:load packageName={PACKAGE_NAME} slot="install" /> : null}
+    <Content />
+  </DocsPage>
+  <SiteFooter />
+</BaseLayout>
+
+<script>
+  import '@/features/Docs/docsPage.client.ts';
+</script>

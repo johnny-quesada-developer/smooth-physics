@@ -1,0 +1,52 @@
+{
+  "name": "smooth-physics",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Real-time secondary motion for character rigs on the web: cloth, hair, tails, ribbons and chains on existing bones.",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./three": "./src/three.ts",
+    "./*": "./src/*.ts"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./three": {
+        "types": "./dist/three.d.ts",
+        "import": "./dist/three.js"
+      },
+      "./float32/*": {
+        "types": "./dist/float32/*.d.ts",
+        "import": "./dist/float32/*.js"
+      }
+    }
+  },
+  "scripts": {
+    "pack": "pnpm run generate:unrounded && vp pack src/index.ts src/three.ts src/float32/scalar.ts src/float32/vector.ts src/float32/quaternion.ts src/float32/matrix.ts --dts --platform neutral --target es2023",
+    "test": "pnpm run generate:unrounded && vp test run --root ../..",
+    "bench": "pnpm run generate:unrounded && vpx bench/run.ts",
+    "bench:browser": "pnpm run generate:unrounded && vpx bench/browser.ts",
+    "bench:baseline": "pnpm run generate:unrounded && vpx bench/run.ts --out bench/results/baseline-node.json && vpx bench/browser.ts --out bench/results/baseline-browser.json",
+    "test:performance": "pnpm run generate:unrounded && vpx bench/run.ts --compare bench/results/baseline-node.json && vpx bench/browser.ts --compare bench/results/baseline-browser.json",
+    "generate:unrounded": "vpx scripts/generate-unrounded-solver.ts"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "peerDependencies": {
+    "three": ">=0.160.0"
+  },
+  "peerDependenciesMeta": {
+    "three": {
+      "optional": true
+    }
+  }
+}

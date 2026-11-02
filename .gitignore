@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+.vite/
+test-results/
+playwright-report/
+coverage/
+
+# Local credentials and machine files
+.env
+.env.*
+!.env.example
+*.local
+.DS_Store

@@ -1,0 +1,50 @@
+import type { Matrix4 } from '../float32/matrix.ts';
+import type { Quaternion, Vector2, Vector3 } from '../float32/types.ts';
+import type { MultiMap, Pair, Triangle } from './multi-map.ts';
+
+export type VertexTriangle = { readonly triangle: number; flip: number };
+
+export type ClothMesh = {
+  readonly name: string;
+  readonly vertexCount: number;
+  readonly transformIds: readonly number[];
+  readonly parentIds: readonly number[];
+  readonly anchorTransformId: number;
+  readonly rootIds: readonly number[];
+  readonly restLocalToWorld: Matrix4;
+  readonly restWorldToLocal: Matrix4;
+  readonly restRotation: Quaternion;
+  readonly restInverseRotation: Quaternion;
+  readonly restScale: Vector3;
+  readonly transformRotations: Quaternion[];
+  readonly transformPositions: Vector3[];
+  readonly transformScales: Vector3[];
+  readonly localPositions: Vector3[];
+  localNormals: Vector3[];
+  localTangents: Vector3[];
+  readonly bindPoses: Matrix4[];
+  readonly attributes: Uint8Array;
+  uvs: Vector2[];
+  lines: Pair[];
+  triangles: Triangle[];
+  edges: Pair[];
+  vertexNeighbours: number[][];
+  vertexTriangles: VertexTriangle[][];
+  edgeTriangles: MultiMap<string, number>;
+  fixedVerticesForCenter: number[];
+  parentIndices: Int32Array;
+  childIndices: number[][];
+  chainIncludesLine: boolean[];
+  chainStart: number[];
+  chainCount: number[];
+  chainData: number[];
+  // Empty unless the normals point outward; then one rotation from the bone frame to the outward frame per vertex.
+  normalCorrectionRotations: Quaternion[];
+  particleToBoneRotations: Quaternion[];
+  vertexInverseRestPositions: Vector3[];
+  vertexInverseRestRotations: Quaternion[];
+  vertexLocalPositions: Vector3[];
+  vertexLocalRotations: Quaternion[];
+  depths: number[];
+  rootIndices: Int32Array;
+};

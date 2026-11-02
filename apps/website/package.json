@@ -1,0 +1,20 @@
+{
+  "name": "website",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "generate": "pnpm --filter smooth-physics run generate:unrounded",
+    "dev": "pnpm run generate && astro dev",
+    "build": "pnpm run generate && astro build",
+    "preview": "astro preview",
+    "check": "pnpm run generate && tsc --noEmit -p . && vpx scripts/check-code-width.ts",
+    "serve:lan": "pnpm run build && vpx scripts/serve-lan.ts",
+    "test:e2e": "playwright test --grep-invert @visual",
+    "test:visual": "playwright test --grep @visual",
+    "test:visual:update": "playwright test --grep @visual --update-snapshots"
+  },
+  "dependencies": {
+    "smooth-physics": "workspace:*"
+  }
+}
