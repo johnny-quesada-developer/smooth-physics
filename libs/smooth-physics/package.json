@@ -1,13 +1,35 @@
 {
   "name": "smooth-physics",
   "version": "0.1.0",
-  "private": true,
   "description": "Real-time secondary motion for character rigs on the web: cloth, hair, tails, ribbons and chains on existing bones.",
+  "keywords": [
+    "animation",
+    "bones",
+    "cloth",
+    "hair",
+    "physics",
+    "secondary-motion",
+    "simulation",
+    "skeleton",
+    "three.js",
+    "webgl"
+  ],
+  "homepage": "https://johnny-quesada-developer.github.io/smooth-physics/",
+  "bugs": {
+    "url": "https://github.com/johnny-quesada-developer/smooth-physics/issues"
+  },
   "license": "MIT",
+  "author": "Johnny Esteban Quesada",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnny-quesada-developer/smooth-physics.git",
+    "directory": "libs/smooth-physics"
+  },
   "files": [
     "dist"
   ],
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
     "./three": "./src/three.ts",
@@ -27,7 +49,8 @@
         "types": "./dist/float32/*.d.ts",
         "import": "./dist/float32/*.js"
       }
-    }
+    },
+    "access": "public"
   },
   "scripts": {
     "pack": "pnpm run generate:unrounded && vp pack src/index.ts src/three.ts src/float32/scalar.ts src/float32/vector.ts src/float32/quaternion.ts src/float32/matrix.ts --dts --platform neutral --target es2023",
@@ -36,10 +59,11 @@
     "bench:browser": "pnpm run generate:unrounded && vpx bench/browser.ts",
     "bench:baseline": "pnpm run generate:unrounded && vpx bench/run.ts --out bench/results/baseline-node.json && vpx bench/browser.ts --out bench/results/baseline-browser.json",
     "test:performance": "pnpm run generate:unrounded && vpx bench/run.ts --compare bench/results/baseline-node.json && vpx bench/browser.ts --compare bench/results/baseline-browser.json",
-    "generate:unrounded": "vpx scripts/generate-unrounded-solver.ts"
+    "generate:unrounded": "vpx scripts/generate-unrounded-solver.ts",
+    "prepublishOnly": "pnpm run pack"
   },
   "dependencies": {
-    "zod": "4.6.7"
+    "zod": "^4.6.7"
   },
   "peerDependencies": {
     "three": ">=0.160.0"
