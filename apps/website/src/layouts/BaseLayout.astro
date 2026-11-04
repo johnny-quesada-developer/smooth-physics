@@ -3,10 +3,13 @@ import { sitePath } from '@/site/paths';
 // The HTML document for every route: metadata, theme, shell script and the page body.
 import '@/styles/global.css';
 
-type Props = { readonly title: string; readonly description: string };
+// noindex keeps a page out of search results, such as the 404 page. image is a 1200×630 preview for link cards.
+type Props = { readonly title: string; readonly description: string; readonly noindex?: boolean; readonly image?: string };
 
-const { title, description } = Astro.props;
+const { title, description, noindex = false, image = '/og/home.png' } = Astro.props;
 const fullTitle = title === 'smooth-physics' ? title : `${title} · smooth-physics`;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const imageUrl = Astro.site ? new URL(sitePath(image), Astro.site).href : undefined;
 ---
 
 <!doctype html>
@@ -16,7 +19,21 @@ const fullTitle = title === 'smooth-physics' ? title : `${title} · smooth-physi
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="noindex, nofollow" />
+    {noindex ? <meta name="robots" content="noindex" /> : null}
+    {canonical ? <link rel="canonical" href={canonical} /> : null}
+    <meta property="og:site_name" content="smooth-physics" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    {canonical ? <meta property="og:url" content={canonical} /> : null}
+    {imageUrl ? <meta property="og:image" content={imageUrl} /> : null}
+    {imageUrl ? <meta property="og:image:width" content="1200" /> : null}
+    {imageUrl ? <meta property="og:image:height" content="630" /> : null}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    {imageUrl ? <meta name="twitter:image" content={imageUrl} /> : null}
+    <link rel="sitemap" href={sitePath('/sitemap-index.xml')} />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#131313" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href={sitePath('/favicon.svg')} type="image/svg+xml" />

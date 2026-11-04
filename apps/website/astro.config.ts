@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
@@ -11,7 +12,8 @@ const BASE = BASE_PATH.replace(/\/$/, '');
 export default defineConfig({
   output: 'static',
   base: BASE_PATH,
-  ...(process.env.SITE_URL ? { site: process.env.SITE_URL } : {}),
+  // Canonical links, link cards and the sitemap need absolute URLs; local builds use the production origin too.
+  site: process.env.SITE_URL ?? 'https://johnny-quesada-developer.github.io',
   trailingSlash: 'always',
   // The tutorials and the reference page became the docs; the benchmark pages became the showreel, which now opens the
   // landing page.
@@ -29,7 +31,11 @@ export default defineConfig({
     '/benchmark/': `${BASE}/`,
     '/benchmark/details/': `${BASE}/`,
   },
-  integrations: [react()],
+  integrations: [
+    react(),
+    // Old addresses and /docs/ only redirect, and the 404 page is not content: none belongs in the sitemap.
+    sitemap({ filter: (page) => !/\/(tutorials|reference|benchmark|showreel)\/|\/404\/?$|\/docs\/$/.test(new URL(page).pathname) }),
+  ],
   markdown: {
     // The VS Code themes of the react-global-state-hooks site, emitted as CSS variables; styles/global.css picks one
     // from the page theme.
