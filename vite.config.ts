@@ -40,6 +40,8 @@ export default defineConfig({
       'libs/smooth-physics/test/golden/**',
       'libs/smooth-physics/bench/results/**',
       'libs/smooth-physics/src/solver-unrounded.ts',
+      // Google Search Console compares the verification file byte for byte with the one it issued.
+      'apps/website/public/google*.html',
     ],
   },
   test: {
